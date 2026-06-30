@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bigfoot Daily Inspection Checklist</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            background: #f0f0f0;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border-left: 4px solid #667eea;
+            margin-bottom: 15px;
+            border-radius: 3px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .checklist-item {
+            background: #f9f9f9;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .checklist-item-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        
+        .pass-btn, .fail-btn {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+        
+        .pass-btn {
+            background: white;
+            color: #27ae60;
+            border-color: #27ae60;
+        }
+        
+        .pass-btn.selected {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .fail-btn {
+            background: white;
+            color: #e74c3c;
+            border-color: #e74c3c;
+        }
+        
+        .fail-btn.selected {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .button-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+            grid-column: span 2;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #229954;
+        }
+        
+        .qr-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 25px;
+        }
+        
+        #qrcode {
+            display: inline-block;
+            margin: 15px 0;
+        }
+        
+        .qr-link {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 12px;
+            word-break: break-all;
+            margin-top: 10px;
+            max-width: 100%;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        .tab-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tab-btn {
+            padding: 10px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .offline-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 999;
+        }
+        
+        .offline-indicator.online {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .offline-indicator.offline {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .pending-reports {
+            background: #fff3cd;
+            color: #856404;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .pending-reports.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-indicator online" id="offlineIndicator">🟢 Online</div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🦶 Bigfoot Daily Inspection</h1>
+            <p>Offline-Capable Checklist App</p>
+        </div>
+        
+        <div class="content">
+            <div class="pending-reports" id="pendingReports">
+                ⏳ <strong id="pendingCount">0</strong> report(s) pending send. They will send automatically when you get service.
+            </div>
+            
+            <div class="success-message" id="successMessage">
+                ✅ Report saved and sent to oslumaintmgrs@onni.com
+            </div>
+            
+            <!-- Tab Navigation -->
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('form')">New Inspection</button>
+                <button class="tab-btn" onclick="switchTab('history')">History</button>
+                <button class="tab-btn" onclick="switchTab('qr')">Share Link</button>
+            </div>
+            
+            <!-- Form Tab -->
+            <div id="form" class="tab-content active">
+                <!-- Header Information -->
+                <div class="section">
+                    <div class="section-title">📋 Inspection Details</div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="inspectionDate">Date:</label>
+                            <input type="date" id="inspectionDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="shift">Shift:</label>
+                            <select id="shift" required>
+                                <option value="">Select Shift</option>
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                                <option value="Overnight">Overnight</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="technicianName">Technician Name:</label>
+                        <input type="text" id="technicianName" placeholder="Enter your name" required>
+                    </div>
+                </div>
+                
+                <!-- Daily Inspection Section -->
+                <div class="section">
+                    <div class="section-title">🔍 Daily Inspection</div>
+                    
+                    <div class="section-title" style="background: #e8f4f8; border-left-color: #3498db; margin-top: 15px;">Body & Structure</div>
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">External frame / body — no cracks, dents, or damage</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item1', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item1', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item1" value="">
+                    </div>
+                    
+                    <div class="section-title" style="background: #e8f4f8; border-left-color: #3498db;">Lights & Alarms</div>
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">All lights operational (head, tail, brake, turn, LED brake)</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item2', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item2', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item2" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Reverse motion alarm — sounds when reverse selected</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item3', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item3', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item3" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Horn — functional (foot-activated switch)</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item4', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item4', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item4" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Strobe light — operational (if fitted)</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item5', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item5', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item5" value="">
+                    </div>
+                    
+                    <div class="section-title" style="background: #e8f4f8; border-left-color: #3498db;">Controls & Pedals</div>
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Throttle pedal — smooth travel, returns to zero</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item6', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item6', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item6" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Brake pedal — firm, slows vehicle progressively</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item7', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item7', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item7" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Park brake — sets, holds, and releases cleanly</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item8', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item8', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item8" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Steering — smooth, no binding or excessive play</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item9', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item9', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item9" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">High / low speed switch — functional</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item10', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item10', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item10" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Directional switch (Fwd / Rev / Off) — functional</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item11', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item11', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item11" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Emergency Power Cut switch — accessible, pulls up to re-engage</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item12', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item12', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item12" value="">
+                    </div>
+                    
+                    <div class="section-title" style="background: #e8f4f8; border-left-color: #3498db;">Seat Belts (if equipped)</div>
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Seat belts — no fraying or damage; buckle latches and releases</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item13', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item13', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item13" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Shoulder belt (if fitted) — properly worn</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item14', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item14', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item14" value="">
+                    </div>
+                    
+                    <div class="section-title" style="background: #e8f4f8; border-left-color: #3498db;">Locking Devices</div>
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Tool box latch — secure</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item15', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item15', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item15" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Battery lid / removable battery tray — secure and locked</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item16', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item16', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item16" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Cargo box latch — secure</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item17', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item17', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item17" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Cab doors (if equipped) — latch properly; remain closed while moving</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item18', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item18', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item18" value="">
+                    </div>
+                    
+                    <div class="section-title" style="background: #e8f4f8; border-left-color: #3498db;">Interlock Switches</div>
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Key / start switch — vehicle OFF when key removed</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item19', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item19', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item19" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Operator presence switch — vehicle disables when driver leaves seat</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item20', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item20', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item20" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Charger interlock — vehicle will not drive while AC cord connected</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item21', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item21', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item21" value="">
+                    </div>
+                    
+                    <div class="section-title" style="background: #e8f4f8; border-left-color: #3498db;">Battery & Electrical</div>
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Battery Status Indicator (BSI) — adequate charge for shift</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item22', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item22', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item22" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Charging cord disconnected and cap secured before operating</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item23', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item23', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item23" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Dash display — no fault codes shown</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item24', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item24', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item24" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">No leaking fluids or grease under vehicle</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item25', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item25', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item25" value="">
+                    </div>
+                </div>
+                
+                <!-- Weekly Inspection Section -->
+                <div class="section">
+                    <div class="section-title">🔧 Weekly Inspection (Qualified Technician)</div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Battery electrolyte level — all cells (distilled water only)</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item26', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item26', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item26" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Tyre tread — inspect for debris, cuts, or damage</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item27', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item27', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item27" value="">
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <label class="checklist-item-label">Tyre air pressure — 70 psi F&R (cold gauge)</label>
+                        <div class="button-group">
+                            <button class="pass-btn" onclick="setCheckbox('item28', 'pass')">Pass</button>
+                            <button class="fail-btn" onclick="setCheckbox('item28', 'fail')">Fail</button>
+                        </div>
+                        <input type="hidden" id="item28" value="">
+                    </div>
+                </div>
+                
+                <!-- Notes Section -->
+                <div class="section">
+                    <div class="section-title">📝 Notes</div>
+                    <div class="form-group">
+                        <label for="notes">Additional observations:</label>
+                        <textarea id="notes" placeholder="Describe any issues or observations..."></textarea>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="button-bar">
+                    <button class="btn btn-primary" onclick="submitInspection()">📤 Submit & Send Report</button>
+                    <button class="btn btn-danger" onclick="resetForm()">🔄 Clear Form</button>
+                </div>
+            </div>
+            
+            <!-- History Tab -->
+            <div id="history" class="tab-content">
+                <div class="section">
+                    <div class="section-title">📋 Inspection History</div>
+                    <div id="historyList" style="max-height: 400px; overflow-y: auto;"></div>
+                </div>
+            </div>
+            
+            <!-- QR Code Tab -->
+            <div id="qr" class="tab-content">
+                <div class="qr-section">
+                    <h3>Share This Inspection Link</h3>
+                    <p style="margin: 15px 0; color: #666;">Share this QR code or link with team members to use this checklist:</p>
+                    <div id="qrcode"></div>
+                    <div class="qr-link" id="shareLink"></div>
+                    <p style="margin-top: 15px; font-size: 13px; color: #666;">
+                        📱 Anyone can scan the QR code or open the link to start an inspection. The app works offline and automatically sends reports when service is available.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Configuration - Work Email
+        const WORK_EMAIL = 'oslumaintmgrs@onni.com';
+        const FORMSPREE_ID = 'f/mqvnwzln'; // You'll need to set this up
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            setTodayDate();
+            loadHistory();
+            generateQRCode();
+            checkPendingReports();
+            setupOnlineOfflineHandler();
+            
+            // Check for pending reports every 5 seconds
+            setInterval(checkPendingReports, 5000);
+        });
+        
+        // Set today's date
+        function setTodayDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('inspectionDate').value = today;
+        }
+        
+        // Online/Offline Handler
+        function setupOnlineOfflineHandler() {
+            window.addEventListener('online', function() {
+                updateOnlineStatus(true);
+            });
+            window.addEventListener('offline', function() {
+                updateOnlineStatus(false);
+            });
+            updateOnlineStatus(navigator.onLine);
+        }
+        
+        function updateOnlineStatus(isOnline) {
+            const indicator = document.getElementById('offlineIndicator');
+            if (isOnline) {
+                indicator.textContent = '🟢 Online';
+                indicator.classList.remove('offline');
+                indicator.classList.add('online');
+            } else {
+                indicator.textContent = '🔴 Offline';
+                indicator.classList.remove('online');
+                indicator.classList.add('offline');
+            }
+        }
+        
+        // Checkbox Handler
+        function setCheckbox(itemId, value) {
+            const element = document.getElementById(itemId);
+            element.value = value;
+            
+            // Update button styles
+            const buttons = document.getElementById(itemId).nextElementSibling.querySelectorAll('button');
+            buttons.forEach(btn => btn.classList.remove('selected'));
+            
+            if (value === 'pass') {
+                buttons[0].classList.add('selected');
+            } else if (value === 'fail') {
+                buttons[1].classList.add('selected');
+            }
+            
+            // Auto-save to localStorage
+            saveFormToLocalStorage();
+        }
+        
+        // Tab Switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // Save form to localStorage
+        function saveFormToLocalStorage() {
+            const formData = {
+                date: document.getElementById('inspectionDate').value,
+                shift: document.getElementById('shift').value,
+                technician: document.getElementById('technicianName').value,
+                notes: document.getElementById('notes').value,
+                items: {}
+            };
+            
+            for (let i = 1; i <= 28; i++) {
+                const value = document.getElementById('item' + i).value;
+                if (value) {
+                    formData.items['item' + i] = value;
+                }
+            }
+            
+            localStorage.setItem('currentForm', JSON.stringify(formData));
+        }
+        
+        // Load form from localStorage
+        function loadFormFromLocalStorage() {
+            const saved = localStorage.getItem('currentForm');
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.getElementById('inspectionDate').value = data.date || '';
+                document.getElementById('shift').value = data.shift || '';
+                document.getElementById('technicianName').value = data.technician || '';
+                document.getElementById('notes').value = data.notes || '';
+                
+                Object.keys(data.items).forEach(itemId => {
+                    const value = data.items[itemId];
+                    document.getElementById(itemId).value = value;
+                    
+                    const buttons = document.getElementById(itemId).nextElementSibling.querySelectorAll('button');
+                    buttons.forEach(btn => btn.classList.remove('selected'));
+                    
+                    if (value === 'pass') {
+                        buttons[0].classList.add('selected');
+                    } else if (value === 'fail') {
+                        buttons[1].classList.add('selected');
+                    }
+                });
+            }
+        }
+        
+        // Load history
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('inspectionHistory')) || [];
+            const historyList = document.getElementById('historyList');
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">No inspections yet.</p>';
+                return;
+            }
+            
+            historyList.innerHTML = history.map((item, index) => `
+                <div style="background: #f9f9f9; padding: 12px; margin-bottom: 10px; border-radius: 5px; border-left: 4px solid ${item.status === 'sent' ? '#27ae60' : '#e74c3c'};">
+                    <strong>${item.date} - ${item.shift} Shift</strong><br>
+                    Tech: ${item.technician}<br>
+                    Status: <span style="color: ${item.status === 'sent' ? '#27ae60' : '#e74c3c'}; font-weight: bold;">${item.status === 'sent' ? '✅ Sent to ' + WORK_EMAIL : '⏳ Pending Send'}</span><br>
+                    <button class="btn btn-secondary" onclick="viewReport(${index})" style="margin-top: 8px; width: 100%;">View Report</button>
+                </div>
+            `).join('');
+        }
+        
+        // Submit Inspection
+        function submitInspection() {
+            // Validate required fields
+            if (!document.getElementById('inspectionDate').value) {
+                alert('Please select a date');
+                return;
+            }
+            if (!document.getElementById('shift').value) {
+                alert('Please select a shift');
+                return;
+            }
+            if (!document.getElementById('technicianName').value) {
+                alert('Please enter technician name');
+                return;
+            }
+            
+            // Create report object
+            const report = {
+                id: Date.now(),
+                date: document.getElementById('inspectionDate').value,
+                shift: document.getElementById('shift').value,
+                technician: document.getElementById('technicianName').value,
+                timestamp: new Date().toISOString(),
+                items: {},
+                notes: document.getElementById('notes').value,
+                status: 'sent'
+            };
+            
+            // Collect all items
+            for (let i = 1; i <= 28; i++) {
+                const value = document.getElementById('item' + i).value;
+                if (value) {
+                    report.items['item' + i] = value;
+                }
+            }
+            
+            // Save to history
+            let history = JSON.parse(localStorage.getItem('inspectionHistory')) || [];
+            history.unshift(report);
+            localStorage.setItem('inspectionHistory', JSON.stringify(history));
+            
+            // Send email
+            sendEmail(report);
+            
+            // Download PDF
+            downloadReportPDF(report);
+            
+            // Show success message
+            showSuccessMessage();
+            
+            // Reset form
+            setTimeout(() => {
+                resetForm();
+                loadHistory();
+                checkPendingReports();
+            }, 1500);
+        }
+        
+        // Send Email via Formspree
+        function sendEmail(report) {
+            const emailBody = buildEmailBody(report);
+            
+            fetch('https://formspree.io/f/mqvnwzln', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: WORK_EMAIL,
+                    message: emailBody,
+                    subject: `Bigfoot Daily Inspection - ${report.date} ${report.shift} Shift`
+                })
+            }).then(response => {
+                console.log('Email sent successfully');
+            }).catch(error => {
+                console.error('Error sending email:', error);
+            });
+        }
+        
+        // Show success message
+        function showSuccessMessage() {
+            const msg = document.getElementById('successMessage');
+            msg.classList.add('show');
+            setTimeout(() => msg.classList.remove('show'), 4000);
+        }
+        
+        // Reset Form
+        function resetForm() {
+            document.getElementById('inspectionDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('shift').value = '';
+            document.getElementById('technicianName').value = '';
+            document.getElementById('notes').value = '';
+            
+            for (let i = 1; i <= 28; i++) {
+                document.getElementById('item' + i).value = '';
+                document.getElementById('item' + i).nextElementSibling.querySelectorAll('button').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+            }
+            
+            localStorage.removeItem('currentForm');
+        }
+        
+        // Check pending reports
+        function checkPendingReports() {
+            const pending = JSON.parse(localStorage.getItem('pendingEmails')) || [];
+            const pendingDiv = document.getElementById('pendingReports');
+            document.getElementById('pendingCount').textContent = pending.length;
+            
+            if (pending.length > 0) {
+                pendingDiv.classList.add('show');
+            } else {
+                pendingDiv.classList.remove('show');
+            }
+        }
+        
+        // Build email body with inspection details
+        function buildEmailBody(report) {
+            let body = `BIGFOOT DAILY INSPECTION REPORT\n`;
+            body += `========================================\n\n`;
+            body += `Date: ${report.date}\n`;
+            body += `Shift: ${report.shift}\n`;
+            body += `Technician: ${report.technician}\n`;
+            body += `Submitted: ${new Date(report.timestamp).toLocaleString()}\n\n`;
+            
+            body += `INSPECTION RESULTS:\n`;
+            body += `----------------------------------------\n`;
+            
+            const itemLabels = {
+                'item1': 'External frame / body',
+                'item2': 'All lights operational',
+                'item3': 'Reverse motion alarm',
+                'item4': 'Horn',
+                'item5': 'Strobe light',
+                'item6': 'Throttle pedal',
+                'item7': 'Brake pedal',
+                'item8': 'Park brake',
+                'item9': 'Steering',
+                'item10': 'High / low speed switch',
+                'item11': 'Directional switch',
+                'item12': 'Emergency Power Cut switch',
+                'item13': 'Seat belts',
+                'item14': 'Shoulder belt',
+                'item15': 'Tool box latch',
+                'item16': 'Battery lid / tray',
+                'item17': 'Cargo box latch',
+                'item18': 'Cab doors',
+                'item19': 'Key / start switch',
+                'item20': 'Operator presence switch',
+                'item21': 'Charger interlock',
+                'item22': 'Battery Status Indicator',
+                'item23': 'Charging cord',
+                'item24': 'Dash display',
+                'item25': 'No leaking fluids',
+                'item26': 'Battery electrolyte level',
+                'item27': 'Tyre tread',
+                'item28': 'Tyre air pressure'
+            };
+            
+            for (let i = 1; i <= 28; i++) {
+                const itemId = 'item' + i;
+                const status = report.items[itemId] || 'Not checked';
+                const statusText = status === 'pass' ? 'PASS' : (status === 'fail' ? 'FAIL' : 'NOT CHECKED');
+                body += `${itemLabels[itemId]}: ${statusText}\n`;
+            }
+            
+            if (report.notes) {
+                body += `\nADDITIONAL NOTES:\n`;
+                body += `----------------------------------------\n`;
+                body += `${report.notes}\n`;
+            }
+            
+            body += `\n========================================\n`;
+            body += `Generated by Bigfoot Daily Inspection App\n`;
+            
+            return body;
+        }
+        
+        // Download report PDF
+        function downloadReportPDF(report) {
+            const element = document.createElement('div');
+            element.innerHTML = generatePDFHTML(report);
+            
+            const opt = {
+                margin: 10,
+                filename: `Bigfoot_Inspection_${report.date}_${report.shift}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+            };
+            
+            html2pdf().set(opt).from(element).save();
+        }
+        
+        // Generate PDF HTML content
+        function generatePDFHTML(report) {
+            const itemLabels = {
+                'item1': 'External frame / body',
+                'item2': 'All lights operational',
+                'item3': 'Reverse motion alarm',
+                'item4': 'Horn',
+                'item5': 'Strobe light',
+                'item6': 'Throttle pedal',
+                'item7': 'Brake pedal',
+                'item8': 'Park brake',
+                'item9': 'Steering',
+                'item10': 'High / low speed switch',
+                'item11': 'Directional switch',
+                'item12': 'Emergency Power Cut switch',
+                'item13': 'Seat belts',
+                'item14': 'Shoulder belt',
+                'item15': 'Tool box latch',
+                'item16': 'Battery lid / tray',
+                'item17': 'Cargo box latch',
+                'item18': 'Cab doors',
+                'item19': 'Key / start switch',
+                'item20': 'Operator presence switch',
+                'item21': 'Charger interlock',
+                'item22': 'Battery Status Indicator',
+                'item23': 'Charging cord',
+                'item24': 'Dash display',
+                'item25': 'No leaking fluids',
+                'item26': 'Battery electrolyte level',
+                'item27': 'Tyre tread',
+                'item28': 'Tyre air pressure'
+            };
+            
+            let html = `
+                <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 800px;">
+                    <h1 style="text-align: center; color: #667eea;">🦶 Bigfoot Daily Inspection Report</h1>
+                    
+                    <div style="background: #f0f0f0; padding: 15px; margin: 20px 0; border-radius: 5px;">
+                        <p><strong>Date:</strong> ${report.date}</p>
+                        <p><strong>Shift:</strong> ${report.shift}</p>
+                        <p><strong>Technician:</strong> ${report.technician}</p>
+                        <p><strong>Submitted:</strong> ${new Date(report.timestamp).toLocaleString()}</p>
+                        <p><strong>Email:</strong> ${WORK_EMAIL}</p>
+                    </div>
+                    
+                    <h2 style="color: #667eea; margin-top: 30px;">Inspection Results</h2>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr style="background: #f0f0f0;">
+                            <th style="text-align: left; padding: 10px; border: 1px solid #ddd;">Item</th>
+                            <th style="text-align: right; padding: 10px; border: 1px solid #ddd;">Status</th>
+                        </tr>
+            `;
+            
+            for (let i = 1; i <= 28; i++) {
+                const itemId = 'item' + i;
+                const status = report.items[itemId] || 'Not checked';
+                const statusColor = status === 'pass' ? '#27ae60' : (status === 'fail' ? '#e74c3c' : '#999');
+                const statusText = status === 'pass' ? '✅ PASS' : (status === 'fail' ? '❌ FAIL' : 'NOT CHECKED');
+                
+                html += `
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd;">${itemLabels[itemId]}</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; text-align: right; color: ${statusColor}; font-weight: bold;">${statusText}</td>
+                    </tr>
+                `;
+            }
+            
+            html += `</table>`;
+            
+            if (report.notes) {
+                html += `
+                    <h2 style="color: #667eea; margin-top: 30px;">Additional Notes</h2>
+                    <p>${report.notes}</p>
+                `;
+            }
+            
+            html += `
+                    <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #ccc; text-align: center; color: #999; font-size: 12px;">
+                        <p>Generated by Bigfoot Daily Inspection App</p>
+                        <p>Sent to: ${WORK_EMAIL}</p>
+                    </div>
+                </div>
+            `;
+            
+            return html;
+        }
+        
+        // View Report
+        function viewReport(index) {
+            const history = JSON.parse(localStorage.getItem('inspectionHistory')) || [];
+            if (history[index]) {
+                downloadReportPDF(history[index]);
+            }
+        }
+        
+        // Generate QR Code
+        function generateQRCode() {
+            const currentUrl = window.location.href;
+            document.getElementById('qrcode').innerHTML = '';
+            new QRCode(document.getElementById('qrcode'), {
+                text: currentUrl,
+                width: 200,
+                height: 200,
+                colorDark: '#667eea',
+                colorLight: '#ffffff'
+            });
+            
+            document.getElementById('shareLink').textContent = currentUrl;
+            document.getElementById('shareLink').href = currentUrl;
+        }
+        
+        // Load saved form data on page load
+        window.addEventListener('load', function() {
+            loadFormFromLocalStorage();
+        });
+    </script>
+</body>
+</html>
