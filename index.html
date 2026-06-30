@@ -129,28 +129,35 @@
             font-weight: 600;
             font-size: 13px;
             transition: all 0.3s ease;
+            background: white;
         }
         
         .pass-btn {
-            background: white;
             color: #27ae60;
             border-color: #27ae60;
         }
         
+        .pass-btn:hover {
+            background: #f0f9f6;
+        }
+        
         .pass-btn.selected {
-            background: #27ae60;
-            color: white;
+            background: #27ae60 !important;
+            color: white !important;
         }
         
         .fail-btn {
-            background: white;
             color: #e74c3c;
             border-color: #e74c3c;
         }
         
+        .fail-btn:hover {
+            background: #fadbd8;
+        }
+        
         .fail-btn.selected {
-            background: #e74c3c;
-            color: white;
+            background: #e74c3c !important;
+            color: white !important;
         }
         
         .button-bar {
@@ -291,6 +298,19 @@
             display: block;
         }
         
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
         .tab-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -372,14 +392,18 @@
             </div>
             
             <div class="success-message" id="successMessage">
-                ✅ Report saved and sent to oslumaintmgrs@onni.com
+                ✅ Report saved and sent to mchristie@onni.com
+            </div>
+
+            <div class="error-message" id="errorMessage">
+                ❌ Error sending email. Please try again.
             </div>
             
             <!-- Tab Navigation -->
             <div class="tab-buttons">
-                <button class="tab-btn active" onclick="switchTab('form')">New Inspection</button>
-                <button class="tab-btn" onclick="switchTab('history')">History</button>
-                <button class="tab-btn" onclick="switchTab('qr')">Share Link</button>
+                <button class="tab-btn active" onclick="switchTab(event, 'form')">New Inspection</button>
+                <button class="tab-btn" onclick="switchTab(event, 'history')">History</button>
+                <button class="tab-btn" onclick="switchTab(event, 'qr')">Share Link</button>
             </div>
             
             <!-- Form Tab -->
@@ -418,8 +442,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">External frame / body — no cracks, dents, or damage</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item1', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item1', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item1', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item1', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item1" value="">
                     </div>
@@ -428,8 +452,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">All lights operational (head, tail, brake, turn, LED brake)</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item2', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item2', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item2', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item2', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item2" value="">
                     </div>
@@ -437,8 +461,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Reverse motion alarm — sounds when reverse selected</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item3', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item3', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item3', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item3', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item3" value="">
                     </div>
@@ -446,8 +470,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Horn — functional (foot-activated switch)</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item4', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item4', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item4', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item4', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item4" value="">
                     </div>
@@ -455,8 +479,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Strobe light — operational (if fitted)</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item5', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item5', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item5', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item5', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item5" value="">
                     </div>
@@ -465,8 +489,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Throttle pedal — smooth travel, returns to zero</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item6', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item6', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item6', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item6', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item6" value="">
                     </div>
@@ -474,8 +498,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Brake pedal — firm, slows vehicle progressively</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item7', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item7', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item7', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item7', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item7" value="">
                     </div>
@@ -483,8 +507,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Park brake — sets, holds, and releases cleanly</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item8', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item8', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item8', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item8', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item8" value="">
                     </div>
@@ -492,8 +516,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Steering — smooth, no binding or excessive play</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item9', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item9', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item9', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item9', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item9" value="">
                     </div>
@@ -501,8 +525,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">High / low speed switch — functional</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item10', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item10', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item10', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item10', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item10" value="">
                     </div>
@@ -510,8 +534,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Directional switch (Fwd / Rev / Off) — functional</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item11', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item11', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item11', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item11', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item11" value="">
                     </div>
@@ -519,8 +543,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Emergency Power Cut switch — accessible, pulls up to re-engage</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item12', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item12', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item12', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item12', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item12" value="">
                     </div>
@@ -529,8 +553,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Seat belts — no fraying or damage; buckle latches and releases</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item13', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item13', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item13', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item13', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item13" value="">
                     </div>
@@ -538,8 +562,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Shoulder belt (if fitted) — properly worn</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item14', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item14', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item14', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item14', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item14" value="">
                     </div>
@@ -548,8 +572,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Tool box latch — secure</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item15', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item15', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item15', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item15', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item15" value="">
                     </div>
@@ -557,8 +581,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Battery lid / removable battery tray — secure and locked</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item16', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item16', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item16', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item16', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item16" value="">
                     </div>
@@ -566,8 +590,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Cargo box latch — secure</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item17', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item17', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item17', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item17', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item17" value="">
                     </div>
@@ -575,8 +599,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Cab doors (if equipped) — latch properly; remain closed while moving</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item18', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item18', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item18', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item18', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item18" value="">
                     </div>
@@ -585,8 +609,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Key / start switch — vehicle OFF when key removed</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item19', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item19', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item19', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item19', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item19" value="">
                     </div>
@@ -594,8 +618,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Operator presence switch — vehicle disables when driver leaves seat</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item20', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item20', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item20', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item20', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item20" value="">
                     </div>
@@ -603,8 +627,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Charger interlock — vehicle will not drive while AC cord connected</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item21', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item21', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item21', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item21', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item21" value="">
                     </div>
@@ -613,8 +637,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Battery Status Indicator (BSI) — adequate charge for shift</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item22', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item22', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item22', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item22', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item22" value="">
                     </div>
@@ -622,8 +646,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Charging cord disconnected and cap secured before operating</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item23', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item23', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item23', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item23', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item23" value="">
                     </div>
@@ -631,8 +655,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Dash display — no fault codes shown</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item24', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item24', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item24', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item24', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item24" value="">
                     </div>
@@ -640,8 +664,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">No leaking fluids or grease under vehicle</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item25', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item25', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item25', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item25', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item25" value="">
                     </div>
@@ -654,8 +678,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Battery electrolyte level — all cells (distilled water only)</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item26', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item26', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item26', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item26', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item26" value="">
                     </div>
@@ -663,8 +687,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Tyre tread — inspect for debris, cuts, or damage</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item27', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item27', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item27', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item27', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item27" value="">
                     </div>
@@ -672,8 +696,8 @@
                     <div class="checklist-item">
                         <label class="checklist-item-label">Tyre air pressure — 70 psi F&R (cold gauge)</label>
                         <div class="button-group">
-                            <button class="pass-btn" onclick="setCheckbox('item28', 'pass')">Pass</button>
-                            <button class="fail-btn" onclick="setCheckbox('item28', 'fail')">Fail</button>
+                            <button type="button" class="pass-btn" onclick="setCheckbox('item28', 'pass')">✓ Pass</button>
+                            <button type="button" class="fail-btn" onclick="setCheckbox('item28', 'fail')">✗ Fail</button>
                         </div>
                         <input type="hidden" id="item28" value="">
                     </div>
@@ -690,8 +714,8 @@
                 
                 <!-- Action Buttons -->
                 <div class="button-bar">
-                    <button class="btn btn-primary" onclick="submitInspection()">📤 Submit & Send Report</button>
-                    <button class="btn btn-danger" onclick="resetForm()">🔄 Clear Form</button>
+                    <button type="button" class="btn btn-primary" onclick="submitInspection()">📤 Submit & Send Report</button>
+                    <button type="button" class="btn btn-danger" onclick="resetForm()">🔄 Clear Form</button>
                 </div>
             </div>
             
@@ -719,9 +743,9 @@
     </div>
     
     <script>
-        // Configuration - Work Email
-        const WORK_EMAIL = 'oslumaintmgrs@onni.com';
-        const FORMSPREE_ID = 'f/mqvnwzln'; // You'll need to set this up
+        // Configuration - Test Email
+        const TEST_EMAIL = 'mchristie@onni.com';
+        const FORMSPREE_ID = 'f/mqvnwzln';
         
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -730,6 +754,7 @@
             generateQRCode();
             checkPendingReports();
             setupOnlineOfflineHandler();
+            loadFormFromLocalStorage();
             
             // Check for pending reports every 5 seconds
             setInterval(checkPendingReports, 5000);
@@ -770,10 +795,14 @@
             const element = document.getElementById(itemId);
             element.value = value;
             
-            // Update button styles
-            const buttons = document.getElementById(itemId).nextElementSibling.querySelectorAll('button');
+            // Get the parent checklist-item div
+            const checklistItem = element.closest('.checklist-item');
+            const buttons = checklistItem.querySelectorAll('.pass-btn, .fail-btn');
+            
+            // Remove selected from all buttons in this item
             buttons.forEach(btn => btn.classList.remove('selected'));
             
+            // Add selected to the clicked button
             if (value === 'pass') {
                 buttons[0].classList.add('selected');
             } else if (value === 'fail') {
@@ -785,7 +814,8 @@
         }
         
         // Tab Switching
-        function switchTab(tabName) {
+        function switchTab(e, tabName) {
+            e.preventDefault();
             // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
@@ -796,7 +826,7 @@
             
             // Show selected tab
             document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
+            e.target.classList.add('active');
         }
         
         // Save form to localStorage
@@ -833,7 +863,8 @@
                     const value = data.items[itemId];
                     document.getElementById(itemId).value = value;
                     
-                    const buttons = document.getElementById(itemId).nextElementSibling.querySelectorAll('button');
+                    const checklistItem = document.getElementById(itemId).closest('.checklist-item');
+                    const buttons = checklistItem.querySelectorAll('.pass-btn, .fail-btn');
                     buttons.forEach(btn => btn.classList.remove('selected'));
                     
                     if (value === 'pass') {
@@ -859,8 +890,8 @@
                 <div style="background: #f9f9f9; padding: 12px; margin-bottom: 10px; border-radius: 5px; border-left: 4px solid ${item.status === 'sent' ? '#27ae60' : '#e74c3c'};">
                     <strong>${item.date} - ${item.shift} Shift</strong><br>
                     Tech: ${item.technician}<br>
-                    Status: <span style="color: ${item.status === 'sent' ? '#27ae60' : '#e74c3c'}; font-weight: bold;">${item.status === 'sent' ? '✅ Sent to ' + WORK_EMAIL : '⏳ Pending Send'}</span><br>
-                    <button class="btn btn-secondary" onclick="viewReport(${index})" style="margin-top: 8px; width: 100%;">View Report</button>
+                    Status: <span style="color: ${item.status === 'sent' ? '#27ae60' : '#e74c3c'}; font-weight: bold;">${item.status === 'sent' ? '✅ Sent to ' + TEST_EMAIL : '⏳ Pending Send'}</span><br>
+                    <button type="button" class="btn btn-secondary" onclick="viewReport(${index})" style="margin-top: 8px; width: 100%;">View Report</button>
                 </div>
             `).join('');
         }
@@ -890,7 +921,7 @@
                 timestamp: new Date().toISOString(),
                 items: {},
                 notes: document.getElementById('notes').value,
-                status: 'sent'
+                status: 'pending'
             };
             
             // Collect all items
@@ -911,6 +942,14 @@
             
             // Download PDF
             downloadReportPDF(report);
+            
+            // Mark as sent after download
+            setTimeout(() => {
+                report.status = 'sent';
+                history[0].status = 'sent';
+                localStorage.setItem('inspectionHistory', JSON.stringify(history));
+                loadHistory();
+            }, 1000);
             
             // Show success message
             showSuccessMessage();
@@ -933,20 +972,28 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    email: WORK_EMAIL,
+                    email: TEST_EMAIL,
                     message: emailBody,
-                    subject: `Bigfoot Daily Inspection - ${report.date} ${report.shift} Shift`
+                    subject: `🦶 Bigfoot Daily Inspection - ${report.date} ${report.shift} Shift - TEST`
                 })
             }).then(response => {
-                console.log('Email sent successfully');
+                console.log('Email request sent to', TEST_EMAIL);
             }).catch(error => {
                 console.error('Error sending email:', error);
+                showErrorMessage();
             });
         }
         
         // Show success message
         function showSuccessMessage() {
             const msg = document.getElementById('successMessage');
+            msg.classList.add('show');
+            setTimeout(() => msg.classList.remove('show'), 4000);
+        }
+
+        // Show error message
+        function showErrorMessage() {
+            const msg = document.getElementById('errorMessage');
             msg.classList.add('show');
             setTimeout(() => msg.classList.remove('show'), 4000);
         }
@@ -960,7 +1007,8 @@
             
             for (let i = 1; i <= 28; i++) {
                 document.getElementById('item' + i).value = '';
-                document.getElementById('item' + i).nextElementSibling.querySelectorAll('button').forEach(btn => {
+                const checklistItem = document.getElementById('item' + i).closest('.checklist-item');
+                checklistItem.querySelectorAll('button').forEach(btn => {
                     btn.classList.remove('selected');
                 });
             }
@@ -1039,6 +1087,7 @@
             
             body += `\n========================================\n`;
             body += `Generated by Bigfoot Daily Inspection App\n`;
+            body += `TEST EMAIL: mchristie@onni.com\n`;
             
             return body;
         }
@@ -1101,7 +1150,7 @@
                         <p><strong>Shift:</strong> ${report.shift}</p>
                         <p><strong>Technician:</strong> ${report.technician}</p>
                         <p><strong>Submitted:</strong> ${new Date(report.timestamp).toLocaleString()}</p>
-                        <p><strong>Email:</strong> ${WORK_EMAIL}</p>
+                        <p><strong>Email:</strong> ${TEST_EMAIL}</p>
                     </div>
                     
                     <h2 style="color: #667eea; margin-top: 30px;">Inspection Results</h2>
@@ -1138,7 +1187,7 @@
             html += `
                     <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #ccc; text-align: center; color: #999; font-size: 12px;">
                         <p>Generated by Bigfoot Daily Inspection App</p>
-                        <p>Sent to: ${WORK_EMAIL}</p>
+                        <p>Test Email Sent To: ${TEST_EMAIL}</p>
                     </div>
                 </div>
             `;
@@ -1169,11 +1218,6 @@
             document.getElementById('shareLink').textContent = currentUrl;
             document.getElementById('shareLink').href = currentUrl;
         }
-        
-        // Load saved form data on page load
-        window.addEventListener('load', function() {
-            loadFormFromLocalStorage();
-        });
     </script>
 </body>
 </html>
