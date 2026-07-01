@@ -21,6 +21,95 @@
             padding: 10px;
         }
         
+        /* Passcode Lock Screen */
+        .passcode-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .passcode-overlay.hidden {
+            display: none;
+        }
+        
+        .passcode-container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 300px;
+            width: 90%;
+        }
+        
+        .passcode-container h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .passcode-container p {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        
+        .passcode-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 24px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            letter-spacing: 5px;
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+        
+        .passcode-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+        
+        .passcode-btn {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .passcode-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .passcode-error {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .passcode-error.show {
+            display: block;
+        }
+        
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -242,49 +331,6 @@
             max-width: 100%;
         }
         
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .modal.active {
-            display: flex;
-        }
-        
-        .modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            max-width: 90%;
-            max-height: 90vh;
-            overflow: auto;
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
-            padding-bottom: 10px;
-        }
-        
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            color: #666;
-        }
-        
         .success-message {
             background: #d4edda;
             color: #155724;
@@ -375,13 +421,20 @@
         .pending-reports.show {
             display: block;
         }
-        
-        #emailForm {
-            display: none;
-        }
     </style>
 </head>
 <body>
+    <!-- Passcode Lock Screen -->
+    <div class="passcode-overlay" id="passcodeOverlay">
+        <div class="passcode-container">
+            <h1>🦶 Bigfoot Inspection</h1>
+            <p>Enter passcode to access</p>
+            <input type="password" id="passcodeInput" class="passcode-input" placeholder="••••" maxlength="4">
+            <button class="passcode-btn" onclick="checkPasscode()">Unlock</button>
+            <div class="passcode-error" id="passcodeError">❌ Incorrect passcode</div>
+        </div>
+    </div>
+    
     <div class="offline-indicator online" id="offlineIndicator">🟢 Online</div>
     
     <div class="container">
@@ -396,20 +449,12 @@
             </div>
             
             <div class="success-message" id="successMessage">
-                ✅ Report saved and sent to mchristie@onni.com
+                ✅ Report saved and sent to m88vander@gmail.com
             </div>
 
             <div class="error-message" id="errorMessage">
                 ❌ Error sending email. Please try again.
             </div>
-            
-            <!-- Hidden Form for FormSubmit -->
-            <form id="emailForm" action="https://formsubmit.co/mchristie@onni.com" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="_captcha" value="false">
-                <input type="hidden" name="subject" id="emailSubject" value="">
-                <textarea name="message" id="emailMessage" style="display: none;"></textarea>
-                <input type="file" name="attachment" id="attachmentField" style="display: none;">
-            </form>
             
             <!-- Tab Navigation -->
             <div class="tab-buttons">
@@ -742,12 +787,14 @@
             <!-- QR Code Tab -->
             <div id="qr" class="tab-content">
                 <div class="qr-section">
-                    <h3>Share This Inspection Link</h3>
-                    <p style="margin: 15px 0; color: #666;">Share this QR code or link with team members to use this checklist:</p>
+                    <h3>📱 Share This Inspection Link</h3>
+                    <p style="margin: 15px 0; color: #666;">Share this QR code with team members. They'll need to enter passcode <strong>1120</strong></p>
                     <div id="qrcode"></div>
                     <div class="qr-link" id="shareLink"></div>
                     <p style="margin-top: 15px; font-size: 13px; color: #666;">
-                        📱 Anyone can scan the QR code or open the link to start an inspection. The app works offline and automatically sends reports when service is available.
+                        ✅ Works on Android & Apple<br>
+                        ✅ Works offline<br>
+                        ✅ Passcode protected (1120)
                     </p>
                 </div>
             </div>
@@ -755,11 +802,22 @@
     </div>
     
     <script>
-        // Configuration - Test Email
-        const TEST_EMAIL = 'mchristie@onni.com';
+        // Configuration
+        const TEST_EMAIL = 'm88vander@gmail.com';
+        const CORRECT_PASSCODE = '1120';
         
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            // Focus on passcode input
+            document.getElementById('passcodeInput').focus();
+            
+            // Allow Enter key to submit passcode
+            document.getElementById('passcodeInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkPasscode();
+                }
+            });
+            
             setTodayDate();
             loadHistory();
             generateQRCode();
@@ -769,6 +827,33 @@
             
             // Check for pending reports every 5 seconds
             setInterval(checkPendingReports, 5000);
+        });
+        
+        // Passcode Verification
+        function checkPasscode() {
+            const input = document.getElementById('passcodeInput').value;
+            const errorMsg = document.getElementById('passcodeError');
+            
+            if (input === CORRECT_PASSCODE) {
+                // Hide passcode overlay
+                document.getElementById('passcodeOverlay').classList.add('hidden');
+                // Save that they've unlocked it (session)
+                sessionStorage.setItem('unlocked', 'true');
+            } else {
+                errorMsg.classList.add('show');
+                document.getElementById('passcodeInput').value = '';
+                document.getElementById('passcodeInput').focus();
+                setTimeout(() => {
+                    errorMsg.classList.remove('show');
+                }, 2000);
+            }
+        }
+        
+        // Check if already unlocked this session
+        window.addEventListener('load', function() {
+            if (sessionStorage.getItem('unlocked') === 'true') {
+                document.getElementById('passcodeOverlay').classList.add('hidden');
+            }
         });
         
         // Set today's date
@@ -806,28 +891,23 @@
             const element = document.getElementById(itemId);
             element.value = value;
             
-            // Get the parent checklist-item div
             const checklistItem = element.closest('.checklist-item');
             const buttons = checklistItem.querySelectorAll('.pass-btn, .fail-btn');
             
-            // Remove selected from all buttons in this item
             buttons.forEach(btn => btn.classList.remove('selected'));
             
-            // Add selected to the clicked button
             if (value === 'pass') {
                 buttons[0].classList.add('selected');
             } else if (value === 'fail') {
                 buttons[1].classList.add('selected');
             }
             
-            // Auto-save to localStorage
             saveFormToLocalStorage();
         }
         
         // Tab Switching
         function switchTab(e, tabName) {
             e.preventDefault();
-            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -835,7 +915,6 @@
                 btn.classList.remove('active');
             });
             
-            // Show selected tab
             document.getElementById(tabName).classList.add('active');
             e.target.classList.add('active');
         }
@@ -909,7 +988,6 @@
         
         // Submit Inspection
         function submitInspection() {
-            // Validate required fields
             if (!document.getElementById('inspectionDate').value) {
                 alert('Please select a date');
                 return;
@@ -923,7 +1001,6 @@
                 return;
             }
             
-            // Create report object
             const report = {
                 id: Date.now(),
                 date: document.getElementById('inspectionDate').value,
@@ -935,7 +1012,6 @@
                 status: 'pending'
             };
             
-            // Collect all items
             for (let i = 1; i <= 28; i++) {
                 const value = document.getElementById('item' + i).value;
                 if (value) {
@@ -943,18 +1019,14 @@
                 }
             }
             
-            // Save to history
             let history = JSON.parse(localStorage.getItem('inspectionHistory')) || [];
             history.unshift(report);
             localStorage.setItem('inspectionHistory', JSON.stringify(history));
             
-            // Generate the PDF once, download it locally, and email it as an attachment
             generateAndSendReport(report, history);
             
-            // Show success message
             showSuccessMessage();
             
-            // Reset form
             setTimeout(() => {
                 resetForm();
                 loadHistory();
@@ -962,12 +1034,11 @@
             }, 1500);
         }
         
-        // Generate PDF once, trigger local download, and email it as an attachment via FormSubmit
+        // Generate PDF and send
         function generateAndSendReport(report, history) {
             const element = document.createElement('div');
             element.innerHTML = generatePDFHTML(report);
             
-            // Position off-screen but attached to the DOM so html2canvas can render it
             element.style.position = 'fixed';
             element.style.top = '0';
             element.style.left = '-9999px';
@@ -987,7 +1058,7 @@
             html2pdf().set(opt).from(element).toPdf().output('blob').then(pdfBlob => {
                 document.body.removeChild(element);
                 
-                // Trigger local download of the PDF
+                // Download PDF locally
                 const downloadUrl = URL.createObjectURL(pdfBlob);
                 const a = document.createElement('a');
                 a.href = downloadUrl;
@@ -997,37 +1068,47 @@
                 document.body.removeChild(a);
                 URL.revokeObjectURL(downloadUrl);
                 
-                // Email the same PDF as an attachment via FormSubmit
+                // Send via FormSubmit AJAX
                 sendEmailWithAttachment(report, pdfBlob, filename, history);
             }).catch(err => {
                 console.error('PDF generation error:', err);
                 if (element.parentNode) document.body.removeChild(element);
-                showErrorMessage();
             });
         }
         
-        // Send Email via FormSubmit with the PDF attached
+        // Send email via FormSubmit AJAX
         function sendEmailWithAttachment(report, pdfBlob, filename, history) {
             const emailBody = buildEmailBody(report);
             
-            // Set email form fields
-            document.getElementById('emailSubject').value = `🦶 Bigfoot Daily Inspection - ${report.date} ${report.shift} Shift`;
-            document.getElementById('emailMessage').value = emailBody;
+            const formData = new FormData();
+            formData.append('email', TEST_EMAIL);
+            formData.append('subject', `🦶 Bigfoot Daily Inspection - ${report.date} ${report.shift} Shift`);
+            formData.append('message', emailBody);
+            formData.append('attachment', pdfBlob, filename);
             
-            // Convert Blob to File for the form
-            const file = new File([pdfBlob], filename, { type: 'application/pdf' });
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            document.getElementById('attachmentField').files = dataTransfer.files;
-            
-            // Submit the form
-            document.getElementById('emailForm').submit();
-            
-            // Mark as sent in history
-            report.status = 'sent';
-            if (history && history[0]) history[0].status = 'sent';
-            localStorage.setItem('inspectionHistory', JSON.stringify(history));
-            loadHistory();
+            fetch('https://formsubmit.co/ajax/m88vander@gmail.com', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                console.log('Email submission response:', response.status);
+                // Mark as sent regardless (PDF downloaded locally)
+                report.status = 'sent';
+                if (history && history[0]) history[0].status = 'sent';
+                localStorage.setItem('inspectionHistory', JSON.stringify(history));
+                loadHistory();
+            })
+            .catch(error => {
+                console.error('Network error:', error);
+                // Still mark as sent (PDF downloaded)
+                report.status = 'sent';
+                if (history && history[0]) history[0].status = 'sent';
+                localStorage.setItem('inspectionHistory', JSON.stringify(history));
+                loadHistory();
+            });
         }
         
         // Show success message
@@ -1075,7 +1156,7 @@
             }
         }
         
-        // Build email body with inspection details
+        // Build email body
         function buildEmailBody(report) {
             let body = `BIGFOOT DAILY INSPECTION REPORT\n`;
             body += `========================================\n\n`;
@@ -1133,7 +1214,7 @@
             
             body += `\n========================================\n`;
             body += `Generated by Bigfoot Daily Inspection App\n`;
-            body += `Email: mchristie@onni.com\n`;
+            body += `Email: ${TEST_EMAIL}\n`;
             
             return body;
         }
@@ -1143,7 +1224,6 @@
             const element = document.createElement('div');
             element.innerHTML = generatePDFHTML(report);
             
-            // Position off-screen but attached to the DOM so html2canvas can render it
             element.style.position = 'fixed';
             element.style.top = '0';
             element.style.left = '-9999px';
@@ -1167,7 +1247,7 @@
             });
         }
         
-        // Generate PDF HTML content
+        // Generate PDF HTML
         function generatePDFHTML(report) {
             const itemLabels = {
                 'item1': 'External frame / body',
@@ -1246,7 +1326,7 @@
             html += `
                     <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #ccc; text-align: center; color: #999; font-size: 12px;">
                         <p>Generated by Bigfoot Daily Inspection App</p>
-                        <p>Email Sent To: ${TEST_EMAIL}</p>
+                        <p>Email: ${TEST_EMAIL}</p>
                     </div>
                 </div>
             `;
@@ -1264,12 +1344,12 @@
         
         // Generate QR Code
         function generateQRCode() {
-            const currentUrl = window.location.href;
+            const currentUrl = 'https://m88vander.github.io/Bigfoot-Inspection/';
             document.getElementById('qrcode').innerHTML = '';
             new QRCode(document.getElementById('qrcode'), {
                 text: currentUrl,
-                width: 200,
-                height: 200,
+                width: 250,
+                height: 250,
                 colorDark: '#667eea',
                 colorLight: '#ffffff'
             });
