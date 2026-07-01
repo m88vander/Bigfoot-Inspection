@@ -8,7 +8,7 @@ Offline-capable daily inspection checklist app with auto-email PDF reports.
 ✅ **Mobile-Friendly** - Works on Android and Apple phones  
 ✅ **QR Code Sharing** - Easy link sharing with team  
 ✅ **PDF Reports** - Professional inspection reports  
-✅ **Auto-Email** - Reports sent to oslumaintmgrs@onni.com  
+✅ **Auto-Email** - Reports sent to mchristie@onni.com  
 ✅ **History Tracking** - View all past inspections  
 
 ## How to Use
