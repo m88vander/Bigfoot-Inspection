@@ -745,7 +745,7 @@
     <script>
         // Configuration - Test Email
         const TEST_EMAIL = 'mchristie@onni.com';
-        const FORMSPREE_ID = 'f/mqvnwzln';
+        const FORMSPREE_ID = 'f/meebrjgr';
         
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -966,18 +966,25 @@
         function sendEmail(report) {
             const emailBody = buildEmailBody(report);
             
-            fetch('https://formspree.io/f/mqvnwzln', {
+            fetch('https://formspree.io/f/meebrjgr', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify({
                     email: TEST_EMAIL,
                     message: emailBody,
                     subject: `🦶 Bigfoot Daily Inspection - ${report.date} ${report.shift} Shift - TEST`
                 })
-            }).then(response => {
-                console.log('Email request sent to', TEST_EMAIL);
+            }).then(async response => {
+                if (response.ok) {
+                    console.log('Email request sent to', TEST_EMAIL);
+                } else {
+                    const data = await response.json().catch(() => null);
+                    console.error('Formspree rejected the submission:', response.status, data);
+                    showErrorMessage();
+                }
             }).catch(error => {
                 console.error('Error sending email:', error);
                 showErrorMessage();
