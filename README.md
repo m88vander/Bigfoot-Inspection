@@ -39,7 +39,7 @@ Each report includes:
 - Additional notes
 - Timestamp of submission
 
-Reports are automatically emailed to: **oslumaintmgrs@onni.com**
+Reports are automatically emailed to: **mchristie@onni.com**
 
 ---
 
