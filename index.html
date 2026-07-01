@@ -937,19 +937,8 @@
             history.unshift(report);
             localStorage.setItem('inspectionHistory', JSON.stringify(history));
             
-            // Send email
-            sendEmail(report);
-            
-            // Download PDF
-            downloadReportPDF(report);
-            
-            // Mark as sent after download
-            setTimeout(() => {
-                report.status = 'sent';
-                history[0].status = 'sent';
-                localStorage.setItem('inspectionHistory', JSON.stringify(history));
-                loadHistory();
-            }, 1000);
+            // Generate the PDF once, download it locally, and email it as an attachment
+            generateAndSendReport(report, history);
             
             // Show success message
             showSuccessMessage();
@@ -962,24 +951,75 @@
             }, 1500);
         }
         
-        // Send Email via Formspree
-        function sendEmail(report) {
+        // Generate PDF once, trigger local download, and email it as an attachment via Formspree
+        function generateAndSendReport(report, history) {
+            const element = document.createElement('div');
+            element.innerHTML = generatePDFHTML(report);
+            
+            // Position off-screen but attached to the DOM so html2canvas can render it
+            element.style.position = 'fixed';
+            element.style.top = '0';
+            element.style.left = '-9999px';
+            element.style.width = '800px';
+            element.style.background = '#ffffff';
+            document.body.appendChild(element);
+            
+            const filename = `Bigfoot_Inspection_${report.date}_${report.shift}.pdf`;
+            const opt = {
+                margin: 10,
+                filename: filename,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, backgroundColor: '#ffffff' },
+                jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+            };
+            
+            html2pdf().set(opt).from(element).toPdf().output('blob').then(pdfBlob => {
+                document.body.removeChild(element);
+                
+                // Trigger local download of the PDF
+                const downloadUrl = URL.createObjectURL(pdfBlob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(downloadUrl);
+                
+                // Email the same PDF as an attachment
+                sendEmailWithAttachment(report, pdfBlob, filename, history);
+            }).catch(err => {
+                console.error('PDF generation error:', err);
+                if (element.parentNode) document.body.removeChild(element);
+                showErrorMessage();
+            });
+        }
+        
+        // Send Email via Formspree with the PDF attached
+        function sendEmailWithAttachment(report, pdfBlob, filename, history) {
             const emailBody = buildEmailBody(report);
+            
+            const formData = new FormData();
+            formData.append('email', TEST_EMAIL);
+            formData.append('message', emailBody);
+            formData.append('subject', `🦶 Bigfoot Daily Inspection - ${report.date} ${report.shift} Shift - TEST`);
+            formData.append('attachment', pdfBlob, filename);
             
             fetch('https://formspree.io/f/meebrjgr', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    // Do NOT set Content-Type manually here — the browser sets the
+                    // correct multipart/form-data boundary automatically for FormData
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify({
-                    email: TEST_EMAIL,
-                    message: emailBody,
-                    subject: `🦶 Bigfoot Daily Inspection - ${report.date} ${report.shift} Shift - TEST`
-                })
+                body: formData
             }).then(async response => {
                 if (response.ok) {
-                    console.log('Email request sent to', TEST_EMAIL);
+                    console.log('Email with PDF attachment sent to', TEST_EMAIL);
+                    report.status = 'sent';
+                    if (history && history[0]) history[0].status = 'sent';
+                    localStorage.setItem('inspectionHistory', JSON.stringify(history));
+                    loadHistory();
                 } else {
                     const data = await response.json().catch(() => null);
                     console.error('Formspree rejected the submission:', response.status, data);
@@ -1104,15 +1144,28 @@
             const element = document.createElement('div');
             element.innerHTML = generatePDFHTML(report);
             
+            // Position off-screen but attached to the DOM so html2canvas can render it
+            element.style.position = 'fixed';
+            element.style.top = '0';
+            element.style.left = '-9999px';
+            element.style.width = '800px';
+            element.style.background = '#ffffff';
+            document.body.appendChild(element);
+            
             const opt = {
                 margin: 10,
                 filename: `Bigfoot_Inspection_${report.date}_${report.shift}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
+                html2canvas: { scale: 2, backgroundColor: '#ffffff' },
                 jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
             };
             
-            html2pdf().set(opt).from(element).save();
+            html2pdf().set(opt).from(element).save().then(() => {
+                document.body.removeChild(element);
+            }).catch((err) => {
+                console.error('PDF generation error:', err);
+                document.body.removeChild(element);
+            });
         }
         
         // Generate PDF HTML content
