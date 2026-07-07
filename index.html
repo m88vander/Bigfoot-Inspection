@@ -15,8 +15,8 @@
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: Arial, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1A1A2E 0%, #0F0F1A 100%);
             min-height: 100vh;
             padding: 10px;
         }
@@ -28,7 +28,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1A1A2E 0%, #0F0F1A 100%);
             z-index: 2000;
             display: flex;
             justify-content: center;
@@ -51,7 +51,7 @@
         }
         
         .passcode-container h1 {
-            color: #667eea;
+            color: #1A1A2E;
             margin-bottom: 10px;
             font-size: 28px;
         }
@@ -76,14 +76,14 @@
         
         .passcode-input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+            border-color: #C8A96E;
+            box-shadow: 0 0 10px rgba(200, 169, 110, 0.35);
         }
         
         .passcode-btn {
             width: 100%;
             padding: 12px;
-            background: #667eea;
+            background: #1A1A2E;
             color: white;
             border: none;
             border-radius: 8px;
@@ -94,9 +94,9 @@
         }
         
         .passcode-btn:hover {
-            background: #5568d3;
+            background: #0F0F1A;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 15px rgba(26, 26, 46, 0.35);
         }
         
         .passcode-error {
@@ -120,10 +120,19 @@
         }
         
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1A1A2E 0%, #0F0F1A 100%);
             color: white;
             padding: 20px;
             text-align: center;
+            border-bottom: 3px solid #C8A96E;
+        }
+        
+        .header .brand {
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 4px;
+            color: #C8A96E;
+            margin-bottom: 8px;
         }
         
         .header h1 {
@@ -145,11 +154,13 @@
         }
         
         .section-title {
-            background: #f0f0f0;
+            background: #1A1A2E;
+            color: #ffffff;
             padding: 12px;
             font-size: 16px;
             font-weight: bold;
-            border-left: 4px solid #667eea;
+            border-left: none;
+            border-bottom: 2px solid #C8A96E;
             margin-bottom: 15px;
             border-radius: 3px;
         }
@@ -267,15 +278,15 @@
         }
         
         .btn-primary {
-            background: #667eea;
+            background: #1A1A2E;
             color: white;
             grid-column: span 2;
         }
         
         .btn-primary:hover {
-            background: #5568d3;
+            background: #0F0F1A;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 15px rgba(26, 26, 46, 0.35);
         }
         
         .btn-secondary {
@@ -320,7 +331,7 @@
         
         .qr-link {
             display: inline-block;
-            background: #667eea;
+            background: #1A1A2E;
             color: white;
             padding: 10px 15px;
             border-radius: 5px;
@@ -375,9 +386,9 @@
         }
         
         .tab-btn.active {
-            background: #667eea;
+            background: #1A1A2E;
             color: white;
-            border-color: #667eea;
+            border-color: #1A1A2E;
         }
         
         .tab-content {
@@ -427,7 +438,7 @@
     <!-- Passcode Lock Screen -->
     <div class="passcode-overlay" id="passcodeOverlay">
         <div class="passcode-container">
-            <h1>🦶 Bigfoot Inspection</h1>
+            <h1>Bigfoot Inspection</h1>
             <p>Enter passcode to access</p>
             <input type="password" id="passcodeInput" class="passcode-input" placeholder="••••" maxlength="4">
             <button class="passcode-btn" onclick="checkPasscode()">Unlock</button>
@@ -439,7 +450,8 @@
     
     <div class="container">
         <div class="header">
-            <h1>🦶 Bigfoot Daily Inspection</h1>
+            <div class="brand">ONNI GROUP</div>
+            <h1>Bigfoot Daily Inspection</h1>
             <p>Offline-Capable Checklist App</p>
         </div>
         
@@ -495,7 +507,7 @@
                 <div class="section">
                     <div class="section-title">🔍 Daily Inspection</div>
                     
-                    <div class="section-title" style="background: #e8f4f8; border-left-color: #3498db; margin-top: 15px;">Body & Structure</div>
+                    <div class="section-title" style="background: #F5EFE6; color: #1A1A2E; border-left: 4px solid #C8A96E; border-bottom: none; margin-top: 15px;">Body & Structure</div>
                     <div class="checklist-item">
                         <label class="checklist-item-label">External frame / body — no cracks, dents, or damage</label>
                         <div class="button-group">
@@ -505,7 +517,7 @@
                         <input type="hidden" id="item1" value="">
                     </div>
                     
-                    <div class="section-title" style="background: #e8f4f8; border-left-color: #3498db;">Lights & Alarms</div>
+                    <div class="section-title" style="background: #F5EFE6; color: #1A1A2E; border-left: 4px solid #C8A96E; border-bottom: none;">Lights & Alarms</div>
                     <div class="checklist-item">
                         <label class="checklist-item-label">All lights operational (head, tail, brake, turn, LED brake)</label>
                         <div class="button-group">
@@ -542,7 +554,7 @@
                         <input type="hidden" id="item5" value="">
                     </div>
                     
-                    <div class="section-title" style="background: #e8f4f8; border-left-color: #3498db;">Controls & Pedals</div>
+                    <div class="section-title" style="background: #F5EFE6; color: #1A1A2E; border-left: 4px solid #C8A96E; border-bottom: none;">Controls & Pedals</div>
                     <div class="checklist-item">
                         <label class="checklist-item-label">Throttle pedal — smooth travel, returns to zero</label>
                         <div class="button-group">
@@ -606,7 +618,7 @@
                         <input type="hidden" id="item12" value="">
                     </div>
                     
-                    <div class="section-title" style="background: #e8f4f8; border-left-color: #3498db;">Seat Belts (if equipped)</div>
+                    <div class="section-title" style="background: #F5EFE6; color: #1A1A2E; border-left: 4px solid #C8A96E; border-bottom: none;">Seat Belts (if equipped)</div>
                     <div class="checklist-item">
                         <label class="checklist-item-label">Seat belts — no fraying or damage; buckle latches and releases</label>
                         <div class="button-group">
@@ -625,7 +637,7 @@
                         <input type="hidden" id="item14" value="">
                     </div>
                     
-                    <div class="section-title" style="background: #e8f4f8; border-left-color: #3498db;">Locking Devices</div>
+                    <div class="section-title" style="background: #F5EFE6; color: #1A1A2E; border-left: 4px solid #C8A96E; border-bottom: none;">Locking Devices</div>
                     <div class="checklist-item">
                         <label class="checklist-item-label">Tool box latch — secure</label>
                         <div class="button-group">
@@ -662,7 +674,7 @@
                         <input type="hidden" id="item18" value="">
                     </div>
                     
-                    <div class="section-title" style="background: #e8f4f8; border-left-color: #3498db;">Interlock Switches</div>
+                    <div class="section-title" style="background: #F5EFE6; color: #1A1A2E; border-left: 4px solid #C8A96E; border-bottom: none;">Interlock Switches</div>
                     <div class="checklist-item">
                         <label class="checklist-item-label">Key / start switch — vehicle OFF when key removed</label>
                         <div class="button-group">
@@ -690,7 +702,7 @@
                         <input type="hidden" id="item21" value="">
                     </div>
                     
-                    <div class="section-title" style="background: #e8f4f8; border-left-color: #3498db;">Battery & Electrical</div>
+                    <div class="section-title" style="background: #F5EFE6; color: #1A1A2E; border-left: 4px solid #C8A96E; border-bottom: none;">Battery & Electrical</div>
                     <div class="checklist-item">
                         <label class="checklist-item-label">Battery Status Indicator (BSI) — adequate charge for shift</label>
                         <div class="button-group">
@@ -1082,7 +1094,7 @@
             
             const formData = new FormData();
             formData.append('email', TEST_EMAIL);
-            formData.append('subject', `🦶 Bigfoot Daily Inspection - ${report.date} ${report.shift} Shift`);
+            formData.append('subject', `Bigfoot Daily Inspection - ${report.date} ${report.shift} Shift`);
             formData.append('message', emailBody);
             formData.append('attachment', pdfBlob, filename);
             
@@ -1282,7 +1294,7 @@
             
             let html = `
                 <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 800px;">
-                    <h1 style="text-align: center; color: #667eea;">🦶 Bigfoot Daily Inspection Report</h1>
+                    <h1 style="text-align: center; color: #1A1A2E;">Bigfoot Daily Inspection Report</h1>
                     
                     <div style="background: #f0f0f0; padding: 15px; margin: 20px 0; border-radius: 5px;">
                         <p><strong>Date:</strong> ${report.date}</p>
@@ -1292,7 +1304,7 @@
                         <p><strong>Email:</strong> ${TEST_EMAIL}</p>
                     </div>
                     
-                    <h2 style="color: #667eea; margin-top: 30px;">Inspection Results</h2>
+                    <h2 style="color: #1A1A2E; margin-top: 30px;">Inspection Results</h2>
                     <table style="width: 100%; border-collapse: collapse;">
                         <tr style="background: #f0f0f0;">
                             <th style="text-align: left; padding: 10px; border: 1px solid #ddd;">Item</th>
@@ -1318,7 +1330,7 @@
             
             if (report.notes) {
                 html += `
-                    <h2 style="color: #667eea; margin-top: 30px;">Additional Notes</h2>
+                    <h2 style="color: #1A1A2E; margin-top: 30px;">Additional Notes</h2>
                     <p>${report.notes}</p>
                 `;
             }
@@ -1350,7 +1362,7 @@
                 text: currentUrl,
                 width: 250,
                 height: 250,
-                colorDark: '#667eea',
+                colorDark: '#1A1A2E',
                 colorLight: '#ffffff'
             });
             
